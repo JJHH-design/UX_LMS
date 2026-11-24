@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HELLO LMS 프로토타입</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#e8ede9;--sf:#fff;--tx:#17201b;--mu:#5f6d65;--ln:#dfe5e1;--pr:#0a5a43;--pt:#fff;--sc:#eef4f0;--wn:#b4531a;--er:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1411;--sf:#18211c;--tx:#e8efea;--mu:#9aa8a0;--ln:#2a3630;--pr:#4fb895;--pt:#06241a;--sc:#1f2b25;--wn:#e59a64;--er:#f2958f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1411;--sf:#18211c;--tx:#e8efea;--mu:#9aa8a0;--ln:#2a3630;--pr:#4fb895;--pt:#06241a;--sc:#1f2b25;--wn:#e59a64;--er:#f2958f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans KR","Noto Sans",sans-serif;font-size:14px;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start;padding:16px}
+#ph{width:393px;max-width:100%;height:852px;flex:none;background:var(--sf);border-radius:36px;border:1px solid var(--ln);display:flex;flex-direction:column;overflow:hidden;position:relative}
+#sb{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 4px;font-size:12px;font-weight:500}
+#top{display:flex;align-items:center;gap:10px;padding:6px 20px 10px;font-weight:500;font-size:18px;min-height:52px;border-bottom:1px solid var(--ln)}
+#top button{background:none;border:0;color:var(--pr);cursor:pointer;padding:6px;display:flex}
+#top .bell{margin-left:auto;background:var(--sc);border-radius:12px;padding:10px}
+svg.i{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#bd{flex:1;overflow-y:auto;padding:20px 20px 0;position:relative}
+.pg{display:grid;grid-template-rows:1fr auto;min-height:100%}.cn{padding-bottom:20px}
+.ft{position:sticky;bottom:0;background:var(--sf);padding:12px 0 20px;z-index:2}.ft:empty{display:none}.ft .bt{margin-top:10px}.ft .bt:first-child{margin-top:0}.ft .ci{position:static;margin:0;padding:0}
+#nav{display:flex;border-top:1px solid var(--ln)}
+#nav button{flex:1;background:none;border:0;padding:10px 0 12px;font-size:11px;color:var(--mu);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit}
+#nav button.on{color:var(--pr);font-weight:700}
+h2{font-size:22px;font-weight:500;margin:0 0 6px}h3{font-size:15px;font-weight:500;margin:24px 0 10px}b{font-weight:500}
+p{margin:4px 0}.mu{color:var(--mu);font-size:12px;line-height:1.5}
+.cd{border:1px solid var(--ln);border-radius:16px;padding:16px;margin:12px 0;background:var(--sf);cursor:pointer}
+.cd.hi{background:var(--sc);border-color:var(--sc)}.cd b{display:block;font-size:15px;margin:4px 0}
+.li{padding:14px 0;border-bottom:1px solid var(--ln);cursor:pointer}.li b{display:block;font-size:15px;margin-bottom:2px}
+.bt{display:block;width:100%;background:var(--pr);color:var(--pt);border:0;border-radius:14px;padding:15px;font-size:15px;font-weight:500;margin-top:16px;cursor:pointer;font-family:inherit}
+.bt.sec{background:var(--sc);color:var(--pr)}.bt:disabled{opacity:.4}
+.tg{display:inline-block;font-size:11px;font-weight:500;color:var(--pr)}.tg.w{color:var(--wn)}.tg.e{color:var(--er)}
+.ch{display:flex;gap:4px;margin:4px 0 8px}.ch span{flex:1;text-align:center;padding:10px 0;border-radius:12px;font-size:13px;cursor:pointer}.ch span.on{background:var(--sc);color:var(--pr);font-weight:500}
+.wk{display:flex;justify-content:space-between;margin:10px 0}.wk div{text-align:center;font-size:11px;color:var(--mu);width:38px;padding:6px 0;border-radius:10px}.wk div b{display:block;font-size:14px;color:var(--tx)}.wk div.on{background:var(--sc)}
+.bar{height:6px;background:var(--sc);border-radius:9px;overflow:hidden;margin:12px 0}.bar i{display:block;height:100%;background:var(--pr);transition:width .3s}
+.opt{border:1.5px solid var(--ln);border-radius:14px;padding:15px;margin:10px 0;cursor:pointer}.opt.s{border-color:var(--pr);background:var(--sc)}.opt.x{border-color:var(--er)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.vd{background:#17201b;color:#fff;border-radius:14px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.vd span{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px}
+.msg{background:var(--sc);border-radius:14px;padding:10px 12px;margin:8px 0;max-width:82%;line-height:1.5}.msg.me{margin-left:auto;background:var(--pr);color:var(--pt)}.msg small{display:block;font-size:10px;opacity:.7}
+.ci{position:sticky;bottom:0;background:var(--sf);display:flex;gap:8px;padding:10px 0 0;margin-top:auto}
+input,textarea{width:100%;border:1.5px solid var(--ln);border-radius:12px;padding:12px;font:inherit;background:var(--sf);color:var(--tx)}
+.ci button{border:0;background:var(--pr);color:var(--pt);border-radius:12px;padding:0 16px;font:inherit;cursor:pointer}
+#toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);background:var(--tx);color:var(--sf);padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap}#toast.on{opacity:1}
+#ms{width:300px;max-width:100%;border:1px solid var(--ln);background:var(--sf);border-radius:20px;padding:18px}
+#ms h4{margin:16px 0 4px;font-size:14px;font-weight:500;color:var(--pr)}#ms p{font-size:12px;color:var(--mu)}#ms li{list-style:none;font-size:13px;padding:3px 0}#ms ul{margin:6px 0;padding:0}#ms .ok{color:var(--pr);font-weight:500}
+.ov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;z-index:6;border-radius:36px}.ov.c{align-items:center;justify-content:center;padding:24px}.ov.b{align-items:flex-end}
+.dl{background:var(--sf);border-radius:20px;padding:22px;width:100%}.sh{background:var(--sf);border-radius:24px 24px 0 0;padding:22px 20px 20px;width:100%}
+.bn{border:0;border-radius:12px;padding:12px 14px;font:inherit;font-weight:500;cursor:pointer}.bn.p{background:var(--pr);color:var(--pt)}.bn.s{background:var(--sc);color:var(--pr)}
+.snk{position:absolute;left:20px;right:20px;bottom:84px;background:var(--tx);color:var(--sf);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:5;font-size:13px}.snk span{font-size:11px;opacity:.75}.snk button{background:none;border:0;color:#7fd6b5;font:inherit;font-weight:500;cursor:pointer}
+.vid{margin:-20px -20px 0;height:210px;background:var(--sc);color:var(--mu);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;overflow:hidden}
+.vid .gr{position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,rgba(8,44,34,.88))}
+.vid .ct{position:absolute;left:16px;right:16px;bottom:14px;display:flex;align-items:center;gap:8px;color:#fff;font-size:12px}
+.vid .pill{background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:99px;padding:3px 10px;font:inherit;font-size:11px;cursor:pointer}
+.vid .pb{position:absolute;left:0;bottom:0;height:3px;background:var(--pr)}
+.ut{display:flex;margin:0 -20px;border-bottom:1px solid var(--ln)}.ut span{flex:1;text-align:center;padding:14px 0 12px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}.ut span.on{border-bottom-color:var(--pr)}
+.ir{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--ln)}.ir .pl{color:var(--tx);font-size:14px;width:16px}.ir.on .pl{color:var(--pr)}.ir .tm{font-size:13px;font-weight:500}.ir .mu{color:var(--tx);font-size:12px}
+.fr{display:flex;gap:16px;align-items:center;padding:8px 4px}.fr span{font-size:13px;color:var(--mu);width:34px}.fr input{border:0;padding:0;background:none;border-radius:0}
+.pv{background:var(--sc);color:var(--mu);border-radius:8px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:15px}.pv i{font-style:normal;background:var(--pr);color:var(--pt);font-size:11px;padding:3px 10px;border-radius:99px}
+.hd{width:44px;height:4px;border-radius:9px;background:var(--ln);margin:-8px auto 14px}
+
+button:focus-visible,.cd:focus-visible,.li:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+button:disabled{cursor:not-allowed}
+#bd button,#bd .cd,#bd .li,#bd .opt{ -webkit-tap-highlight-color:transparent}
+.dk{background:var(--pr)!important;color:var(--pt)!important}.gy{background:var(--sc)!important;color:var(--pr)!important}
+
+/* Responsive layout and consistent component sizing */
+body{width:100%;min-height:100vh;align-items:flex-start;gap:24px;padding:20px}
+#ph{width:min(393px,100%);height:min(852px,calc(100dvh - 40px));min-height:620px;flex:0 1 393px;border-radius:30px}
+#bd{min-width:0;width:100%;overflow-x:hidden}
+#bd *{min-width:0}
+#bd .pg,#bd .cn,#bd .ft{width:100%;max-width:100%}
+#bd .cd,#bd .li,#bd .opt,#bd .bt,#bd input,#bd textarea{max-width:100%}
+#bd .row{min-width:0}
+#bd .row>div{min-width:0;flex:1;overflow-wrap:break-word}
+#bd .mu{overflow-wrap:break-word}
+#bd .ch{width:100%}
+#bd .wk{gap:2px}
+#bd .wk div{flex:1;min-width:0;width:auto}
+#bd .vid,#bd .ut{max-width:none}
+#bd .ft{box-sizing:border-box}
+#ms{width:min(300px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;align-self:flex-start;position:sticky;top:20px}
+@media(max-width:760px){
+ body{padding:0;gap:0;justify-content:center;background:var(--sf)}
+ #ph{width:100%;max-width:430px;height:100dvh;min-height:0;border:0;border-radius:0;flex:1 1 100%}
+ #ms{display:none}
+}
+@media(min-width:761px) and (max-height:700px){
+ #ph{height:calc(100dvh - 32px);min-height:560px}
+}
+
+/* PDF 기준 최종 디자인 시스템: 무채색, 얇은 구분선, 명확한 위계 */
+:root{--bg:#f1f1f1;--sf:#fff;--tx:#171717;--mu:#777;--ln:#e5e5e5;--pr:#414141;--pt:#fff;--sc:#f1f1f1;--wn:#555;--er:#a33;color-scheme:light}
+body{background:#ededed}
+#ph{border:1px solid #dedede;border-radius:30px;box-shadow:0 12px 40px rgba(0,0,0,.06)}
+#top{color:#171717;border-bottom:1px solid #ececec}
+#top button{color:#333}
+#top .bell{background:#f4f4f4}
+#bd{padding:18px 20px 0}
+h2{font-size:20px;font-weight:700;letter-spacing:-.45px}
+h3{font-size:16px;font-weight:700;letter-spacing:-.3px}
+b{font-weight:700}
+.mu{color:#777}
+.cd{border:1px solid #e7e7e7;border-radius:13px;padding:15px;margin:10px 0;box-shadow:none}
+.cd.hi{background:#f2f2f2;border-color:#f2f2f2}
+.bt{background:#414141;border-radius:11px;padding:14px 15px;font-weight:700;transition:background .18s,transform .18s,box-shadow .18s}
+.bt.sec{background:#f0f0f0;color:#333}
+.bt:hover:not(:disabled),.bn:hover:not(:disabled),.ci button:hover{background:#222;color:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.bt.sec:hover:not(:disabled),.bn.s:hover:not(:disabled){background:#dedede;color:#111}
+.bt:active:not(:disabled),.bn:active:not(:disabled){transform:scale(.985)}
+.bt:focus-visible,.bn:focus-visible,button:focus-visible,.opt:focus-visible{outline:2px solid #777;outline-offset:3px}
+.bt:disabled{opacity:.35;cursor:not-allowed}
+.bn{transition:all .18s}
+.tg{color:#444;font-weight:700}
+.tg.w,.tg.e{color:#555}
+.ch{border-bottom:1px solid #e5e5e5;gap:0}
+.ch span{border-radius:0;padding:12px 4px 10px;border-bottom:2px solid transparent;transition:all .18s}
+.ch span:hover{background:#f5f5f5}
+.ch span.on{background:transparent;color:#111;border-bottom-color:#333}
+.opt{transition:all .18s}
+.opt:hover{border-color:#777;background:#f7f7f7}
+.opt.s{border-color:#333;background:#f0f0f0;color:#111}
+.li{transition:background .16s,padding .16s}
+.li:hover{background:#f7f7f7;padding-left:8px;padding-right:8px}
+.cd[onclick]:hover{border-color:#bdbdbd;background:#f8f8f8}
+.cd.hi[onclick]:hover{background:#eaeaea}
+#nav{background:#fff;border-top:1px solid #e8e8e8}
+#nav button{transition:color .16s,background .16s}
+#nav button:hover{background:#f7f7f7;color:#111}
+#nav button.on{color:#171717}
+#nav button.on svg{stroke-width:2.3}
+input,textarea{border-color:#dedede;border-radius:9px;transition:border-color .18s,box-shadow .18s}
+input:focus,textarea:focus{outline:none;border-color:#555;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.ci button{background:#414141;transition:all .18s}
+.msg{background:#f0f0f0;color:#222;border-radius:12px}
+.msg.me{background:#444;color:#fff}
+.ov{backdrop-filter:blur(2px);animation:fadeIn .18s ease}
+.dl,.sh{box-shadow:0 12px 40px rgba(0,0,0,.18);animation:popUp .22s cubic-bezier(.2,.8,.2,1)}
+.ov.c .dl{max-width:340px}
+.ov.b .sh{max-height:85%;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+.hd{background:#ccc}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popUp{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+#toast{background:#222;color:#fff}
+.snk{background:#222}
+.vd{background:#292929}
+.vid{background:#292929;color:#fff}
+.vid .pb{background:#fff}
+.fr input{border:0;box-shadow:none}
+.modal-x{border:0;background:#f1f1f1;color:#444;border-radius:50%;width:28px;height:28px;font-size:20px;line-height:1;cursor:pointer;transition:.18s}
+.modal-x:hover{background:#222;color:#fff}
+/* 공통 리스트·상태 컴포넌트 */
+.section-kicker{font-size:11px;color:#777;letter-spacing:.4px;font-weight:700}
+.status-line{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #e8e8e8}
+.file-row{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #e5e5e5;border-radius:12px;margin:12px 0}
+.file-icon{width:38px;height:38px;border-radius:9px;background:#f0f0f0;display:grid;place-items:center;font-size:18px}
+.mini-action{border:1px solid #ddd;background:#fff;border-radius:9px;padding:9px 12px;font:inherit;font-size:12px;cursor:pointer;transition:.18s}
+.mini-action:hover{background:#eee}
+.notice-card{background:#f3f3f3;border-radius:12px;padding:13px;margin:10px 0}
+
+/* 모든 영역에서 스크롤은 유지하고 스크롤바만 숨김 */
+*, *::before, *::after {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  scrollbar-gutter: auto !important;
+}
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 스크롤 기능은 유지하고 스크롤바 트랙만 숨김 */
+html, body, #ph, #bd, .pg, .cn, .ft, .ov, .sh, .dl {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#ph::-webkit-scrollbar,
+#bd::-webkit-scrollbar,
+.pg::-webkit-scrollbar,
+.cn::-webkit-scrollbar,
+.ft::-webkit-scrollbar,
+.ov::-webkit-scrollbar,
+.sh::-webkit-scrollbar,
+.dl::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+
+/* 팝업 애니메이션은 최초 표시 때만 실행하며, 모션 최소화 설정도 존중 */
+@media (prefers-reduced-motion: reduce) {
+  .ov, .dl, .sh { animation: none !important; }
+}
+
+
+/* 채팅 입력창: 가로 정렬 + 아이콘 전송 버튼 */
+.ci {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.ci input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ci button.send-icon {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  transition: background-color .18s ease, transform .18s ease, opacity .18s ease;
+}
+.ci button.send-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ci button.send-icon:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.ci button.send-icon:active {
+  transform: scale(.95);
+}
+.ci button.send-icon:focus-visible {
+  outline: 2px solid var(--pr);
+  outline-offset: 3px;
+}
+
+
+/* 영상 컨트롤: 재생 시간/인덱스는 왼쪽, 배속/전체화면은 오른쪽 */
+.vid .ct > button:nth-of-type(2) {
+  margin-left: auto;
+}
+.vid .ct > button:nth-of-type(3) {
+  margin-left: 0;
+}
+
+
+/* Reference palette: pale sage canvas + forest-green accent */
+:root,
+:root[data-theme="light"] {
+  --bg: #e8f0eb;
+  --sf: #ffffff;
+  --tx: #18352c;
+  --mu: #60766c;
+  --ln: #d8e4dc;
+  --pr: #00634d;
+  --pt: #ffffff;
+  --sc: #edf5f0;
+  --wn: #a84412;
+  --er: #c62e24;
+  color-scheme: light;
+}
+body { background: var(--bg); }
+#ph { background: #f4f8f5; border-color: #e2ebe5; }
+#sb, #top, #nav { background: #fff; }
+#top { color: var(--tx); }
+#top .bell { background: var(--sc); }
+.cd { border-color: var(--ln); }
+.cd.hi { background: var(--sc); border-color: var(--ln); }
+.bt { background: var(--pr); color: #fff; }
+.bt.sec { background: var(--sc); color: var(--pr); }
+.ch span.on, .wk div.on { background: #e4f2eb; color: var(--pr); }
+.opt.s { background: #eaf4ee; border-color: var(--pr); }
+#nav button.on { color: var(--pr); }
+.li { border-color: var(--ln); }
+input:focus, textarea:focus {
+  outline: 2px solid rgba(0, 99, 77, .18);
+  border-color: var(--pr);
+}
+.bt:hover, .bn.p:hover, .ci button:hover { background: #004f3e; }
+
+
+/* Screenshot-matched theme: white device canvas on charcoal preview background */
+:root,
+:root[data-theme="light"] {
+  --bg: #444444;
+  --sf: #ffffff;
+  --tx: #1b3029;
+  --mu: #5d7168;
+  --ln: #e1e9e4;
+  --pr: #00634d;
+  --pt: #ffffff;
+  --sc: #f0f5f1;
+  --wn: #a95a08;
+  --er: #c52f28;
+  color-scheme: light;
+}
+html, body { min-height: 100%; background: #444444; }
+body {
+  background: #444444;
+  padding: 20px 10px;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+}
+#ph {
+  width: 453px;
+  max-width: calc(100vw - 20px);
+  height: min(982px, calc(100dvh - 40px));
+  min-height: 620px;
+  border: 0;
+  border-radius: 28px;
+  background: #fff;
+}
+#sb {
+  background: #fff;
+  padding: 12px 24px 4px;
+  color: var(--mu);
+}
+#top {
+  background: #fff;
+  color: var(--tx);
+  min-height: 64px;
+  padding: 8px 24px 12px;
+  font-size: 22px;
+  border-bottom: 1px solid var(--ln);
+}
+#top .bell { background: var(--sc); }
+#bd {
+  background: #fff;
+  padding: 26px 24px 0;
+}
+.pg, .cn { background: #fff; }
+.ft {
+  background: #fff;
+  padding: 12px 0 18px;
+}
+#nav {
+  background: #fff;
+  border-top: 1px solid var(--ln);
+  padding: 2px 12px 4px;
+}
+#nav button {
+  padding: 10px 0 12px;
+  font-size: 12px;
+}
+.cd { border-radius: 17px; }
+.cd.hi { background: var(--sc); border-color: var(--sc); }
+.bt { border-radius: 14px; }
+.wk div.on, .ch span.on { background: #e5f2eb; color: var(--pr); }
+.ov { border-radius: 28px; }
+@media (max-width: 480px) {
+  body { padding: 0; background: #fff; }
+  #ph {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    border-radius: 0;
+  }
+  .ov { border-radius: 0; }
+}
+
+
+/* Team creation flow: clear tap targets and working selection affordances */
+.team-member.selectable { cursor: pointer; border: 1px solid var(--ln); border-radius: 12px; padding: 12px; margin: 8px 0; }
+.team-member.selectable:hover { background: var(--sc); border-color: var(--pr); }
+.team-member.unavailable { pointer-events: none; }
+#teamMemberList { display: flex; flex-direction: column; gap: 6px; }
+#teamMemberList .li { margin: 0; }
+#teamSearch { box-sizing: border-box; min-height: 44px; }
+
+
+/* Korean typography: wrap at word boundaries, never split Hangul syllables mid-word */
+#ph, #ph * {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+#ph input, #ph textarea, #ph code, #ph pre {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+.quiz-head { margin-bottom: 22px; }
+.quiz-progress { height: 5px; background: var(--ln); border-radius: 99px; overflow: hidden; margin: 14px 0 10px; }
+.quiz-progress i { display:block; height:100%; background:var(--pr); border-radius:99px; transition:width .2s ease; }
+.quiz-count { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.quiz-question { margin: 22px 0 20px; line-height:1.5; }
+.quiz-options { display:flex; flex-direction:column; gap:10px; }
+.quiz-option { width:100%; min-height:62px; display:flex; align-items:center; gap:12px; padding:14px 15px; border:1px solid var(--ln); border-radius:13px; background:var(--sf); color:var(--tx); text-align:left; font:inherit; cursor:pointer; transition:background .16s,border-color .16s; }
+.quiz-option:hover:not(:disabled) { background:var(--sc); border-color:var(--pr); }
+.quiz-option.selected { background:var(--sc); border-color:var(--pr); }
+.quiz-option.correct { border-color:var(--pr); background:var(--sc); }
+.quiz-option.wrong { border-color:var(--er); background:#fff7f6; }
+.quiz-option:disabled { opacity:1; cursor:default; }
+.quiz-letter { flex:0 0 28px; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:var(--sc); color:var(--pr); font-weight:700; }
+.quiz-radio { margin-left:auto; flex:0 0 22px; width:22px; height:22px; display:grid; place-items:center; border:1px solid var(--ln); border-radius:50%; color:var(--pr); }
+.quiz-option.selected .quiz-radio { background:var(--pr); color:#fff; border-color:var(--pr); }
+.quiz-feedback { margin-top:18px; padding:16px; border-radius:13px; background:var(--sc); }
+.quiz-feedback p { margin:8px 0 0; color:var(--mu); line-height:1.65; }
+.quiz-feedback.is-wrong { background:#fff7f6; }
+.quiz-action { width:100%; margin-top:18px; }
+.quiz-score { margin:24px 0 16px; padding:26px 18px; border-radius:16px; background:var(--sc); display:flex; flex-direction:column; align-items:center; gap:5px; }
+.quiz-score strong { font-size:34px; color:var(--pr); }
+.quiz-score span { color:var(--mu); }
+.quiz-result > .cd { margin-top:18px; }
+
+
+/* Separate the quiz assessment from the lesson-note review */
+.summary-page > .mu { line-height:1.65; margin:8px 0 18px; }
+.summary-card { border:1px solid var(--ln); border-radius:14px; padding:16px; margin:12px 0; background:var(--sf); }
+.summary-no { color:var(--mu); font-size:12px; font-weight:700; letter-spacing:.04em; }
+.summary-card h3 { margin:8px 0 10px; }
+.summary-card p { color:var(--mu); line-height:1.65; margin:0 0 12px; }
+.summary-card ul { padding-left:18px; margin:0; }
+.summary-card li { margin:8px 0; line-height:1.6; }
+.summary-card li b { color:var(--tx); }
+.summary-end { margin:22px 0 12px; padding:16px; border-radius:13px; background:var(--sc); }
+.summary-end p { margin:7px 0 0; line-height:1.6; }
+
+
+/* Team chat memo sharing */
+.ci .chat-plus {
+  flex:0 0 42px; width:42px; height:42px; padding:0;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid var(--ln); border-radius:12px;
+  background:var(--sc); color:var(--pr); font-size:27px; line-height:1;
+  transition:background .16s,transform .16s;
+}
+.ci .chat-plus:hover { background:var(--ln); transform:translateY(-1px); }
+.share-memo-list { display:flex; flex-direction:column; gap:9px; margin-top:14px; max-height:48vh; overflow:auto; }
+.share-memo-item { display:flex; flex-direction:column; align-items:flex-start; gap:5px; width:100%; padding:14px; text-align:left; border:1px solid var(--ln); border-radius:13px; background:var(--sf); color:var(--tx); cursor:pointer; }
+.share-memo-item:hover { background:var(--sc); border-color:var(--pr); }
+.share-memo-time { color:var(--mu); font-size:12px; }
+.share-memo-item .mu { line-height:1.55; }
+.share-memo-send { color:var(--pr); font-size:13px; font-weight:700; margin-top:4px; }
+.msg { max-width:88%; word-break:keep-all; overflow-wrap:break-word; line-height:1.6; }
+
+
+/* Always-visible, fixed-size share button in the chat composer */
+.ci { display:flex !important; flex-direction:row !important; align-items:center !important; gap:8px !important; width:100% !important; }
+.ci .chat-plus {
+  display:inline-flex !important; visibility:visible !important; opacity:1 !important;
+  flex:0 0 44px !important; width:44px !important; min-width:44px !important; height:44px !important;
+  align-items:center !important; justify-content:center !important;
+  padding:0 !important; border:1px solid var(--ln) !important; border-radius:12px !important;
+  background:var(--sc) !important; color:var(--pr) !important; cursor:pointer !important;
+}
+.ci .chat-plus svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+.ci input { flex:1 1 0 !important; min-width:0 !important; }
+
+
+/* Smooth, restrained micro-interactions inspired by polished fintech apps */
+:root { --motion-fast: 140ms; --motion-mid: 220ms; --ease-out: cubic-bezier(.2,.75,.25,1); }
+button, .bt, .bn, .cd, .li, .ch span, #nav button, .opt, .quiz-option, .share-memo-item {
+  -webkit-tap-highlight-color: transparent;
+}
+.bt, .bn, .send-icon, .chat-plus, .bell, #nav button, .ch span, .opt, .quiz-option, .share-memo-item {
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    background-color var(--motion-mid) var(--ease-out),
+    border-color var(--motion-mid) var(--ease-out),
+    color var(--motion-mid) var(--ease-out),
+    box-shadow var(--motion-mid) var(--ease-out),
+    opacity var(--motion-mid) var(--ease-out);
+}
+.bt:not(:disabled):hover, .bn:hover, .send-icon:hover, .chat-plus:hover {
+  filter: brightness(.97);
+  box-shadow: 0 4px 12px rgba(16,55,39,.09);
+}
+.bt:not(:disabled):active, .bn:active, .send-icon:active, .chat-plus:active,
+#nav button:active, .ch span:active, .opt:active, .quiz-option:active, .share-memo-item:active {
+  transform: scale(.975);
+}
+.bt:disabled { cursor:not-allowed; }
+.cd[onclick], .li[onclick] { transition: transform var(--motion-mid) var(--ease-out), box-shadow var(--motion-mid) var(--ease-out), border-color var(--motion-mid) var(--ease-out); }
+.cd[onclick]:hover, .li[onclick]:hover { border-color: color-mix(in srgb, var(--pr) 28%, var(--ln)); }
+.cd[onclick]:active, .li[onclick]:active { transform: scale(.992); }
+input, textarea { transition: border-color var(--motion-mid) var(--ease-out), box-shadow var(--motion-mid) var(--ease-out); }
+input:focus, textarea:focus { outline:none; border-color:var(--pr); box-shadow:0 0 0 3px color-mix(in srgb, var(--pr) 12%, transparent); }
+#nav button { position:relative; }
+#nav button.on { transform:translateY(-1px); }
+#nav button svg { transition:transform var(--motion-mid) var(--ease-out); }
+#nav button.on svg { transform:translateY(-2px); }
+.page-enter { animation: pageEnter 240ms var(--ease-out) both; }
+@keyframes pageEnter { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }
+.ov { animation: overlayIn 180ms ease-out both; backdrop-filter:blur(2px); }
+.ov.c .dl { animation: dialogIn 220ms var(--ease-out) both; }
+.ov.b .sh { animation: sheetRise 320ms cubic-bezier(.22,.8,.24,1) both; will-change: transform, opacity; }
+@keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
+@keyframes dialogIn { from { opacity:0; transform:translateY(10px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes sheetRise { from { opacity:.85; transform:translateY(100%); } to { opacity:1; transform:translateY(0); } }
+#toast { transition:opacity 180ms ease, transform 220ms var(--ease-out); transform:translate(-50%,8px); }
+#toast.on { transform:translate(-50%,0); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
+
+</style></head><body>
+<div id="ph"><div id="sb"><span>9:41</span><svg class="i" width="62" height="12" viewBox="0 0 62 12" style="stroke-width:1.4"><path d="M2 9v1M6 7v3M10 5v5M14 3v7" style="stroke-width:2"/><path d="M26 5a7 7 0 0 1 10 0M28 7.5a4 4 0 0 1 6 0"/><circle cx="31" cy="10" r=".6"/><rect x="44" y="2" width="16" height="8" rx="2.5"/><rect x="46" y="4" width="12" height="4" rx="1" style="fill:currentColor"/></svg></div><div id="top"></div><div id="bd"></div><div id="nav"></div><div id="toast"></div><div id="md"></div></div>
+<script>
+const S={md:null,sn:0,todo:[],lastAdd:-1,bc:0,gt:'졸업요건',ie:-1,tab:'home',scr:'home',st:[],sub:false,les:15,qd:false,qi:0,qs:null,qr:false,sd:false,flt:'전체',prog:0,ls:1,pt:'idx',pos:0,pl:false,memo:0,rc:0,tm:0,week:4,ct:'대화',room:'team',tname:'HELLO 디자인팀',task:0,pk:false,lead:0,am:false,at:'사용성 테스트 준비',ad:'참가자 3명을 모집하고, 과제 제출 흐름의 테스트 질문을 작성해 주세요.',f:{qTitle:'',qBody:'',qTime:'03:50',qIndex:0,shareTarget:0,answer:''}};
+const MSG={team:[['김민지','테스트 전에 과제 기준을 공유해 주세요.']],mj:[['김민지','강의에서 정리한 메모 보내 줄 수 있어?']]};
+const MEMOS=[['03:50','사용성 원칙','과업의 성공 기준을 먼저 정의하기.',1],['17:00','과제 제출 형식','PDF 한 파일로 제출하기.',1]];
+const IDX=[[['03:50','시험 범위 안내','사용성 원칙과 평가 기준'],['05:12','질문이 생긴 개념','효과성과 효율성'],['17:00','과제 제출 형식','PDF 형식과 제출 기준'],['26:05','다음 주 준비','사용성 테스트 체크리스트']],
+[['04:10','시각적 위계','레이아웃과 타이포그래피'],['12:30','시각적 대비','색과 대비 평가'],['22:00','화면 평가 실습','UI 화면 체크리스트']],
+[['05:00','과업 설계','상황과 목표 제시'],['15:00','성공 기준','성공·실패 판정 기준'],['24:00','Think Aloud','발화 기록 방법']]];
+const LN=['사용성 원칙','UI 화면 평가','테스트 설계'];
+const QA=[['과업의 성공 기준은 어떻게 작성하나요?','사용성 테스트에서 과업의 성공 여부를 어떤 행동으로 판단하면 좋을까요?','답변 완료',1,'03:50','사용자가 목표 행동을 완료했는지로 판단하세요. 예를 들어 PDF 선택이 아니라 최종 제출 완료가 성공 기준이에요.'],['제출할 PDF에 어떤 내용을 넣어야 하나요?','테스트 과업과 관찰 결과 외에 수정 화면도 함께 넣어야 하나요?','답변 완료',1,'17:00','테스트 과업·관찰 결과·수정 화면을 포함해 주세요.']];
+const TS=['시작 전','진행 중','완료'];
+const DL=[['D-5','계절학기 신청','12.01 (화) – 12.05 (토)'],['D-16','졸업작품 계획서 제출','12.12 (토) 18:00 · 학과 사무실'],['D-33','국가장학금 1차 신청','12.29 (화)까지 · 한국장학재단']];
+const GA=[['교양',26,40],['전공선택',24,36],['전공필수',33,39],['전공기초',15,15]];
+function addTd(i){S.todo.push(i);S.lastAdd=i;S.sn=1;clearTimeout(S.snt);S.snt=setTimeout(()=>{S.sn=0;R(1)},4500);R(1)}
+function addIdx(){const t=$('it').value||'새 인덱스',d=$('id').value||'추가했습니다.',I=IDX[S.ls-1];if(S.ie>=0)I[S.ie]=[I[S.ie][0],t,d];else I.push([fmt(S.pos),t,d]);I.sort((a,b)=>sec(a[0])-sec(b[0]));S.md=null;R(1);toast('인덱스를 등록했어요')}
+function sendQ(){const title=$('qt').value.trim(),body=$('qc').value.trim();if(!title||!body){toast('질문 제목과 내용을 입력해 주세요');return}S.f.qTitle=title;S.f.qBody=body;S.f.qTime=fmt(S.pos);S.scr='qconfirm';S.md=null;R()}
+const banner=()=>S.bc?crd('졸업 체크 · 복학','졸업까지 32학점 · 계절학기 신청 D-5','',"go('grad')"):`<div class="cd hi" style="cursor:default"><span class="tg">졸업 체크 · 복학</span><b style="font-size:17px;line-height:1.4">다시 오신 걸 환영해요, 지민님<br>바뀐 교과목이 3개 있어요</b><span class="mu">부족 32학점 › · 기한 3개 ›</span><div class="row" style="gap:8px;margin-top:14px"><button class="bn s" style="flex:1" onclick="event.stopPropagation();S.bc=1;R()">닫기</button><button class="bn p" style="flex:2" onclick="event.stopPropagation();go('grad')">졸업 체크 보기</button></div></div>`;
+const gradCard=()=>crd('복학생 안내 · 졸업 체크','98 / 130학점','부족 32학점 · 남은 요건 2개 · 다음 기한 계절학기 신청 D-5',"go('grad')");
+function gradV(){const t=S.gt;let h=`<p class="mu">2026학년도 입학 요람 기준 · 디자인학과</p><h2>졸업까지 32학점</h2><p class="mu">남은 요건 2 · 바뀐 교과목 3 · 기한 3</p><div class="ch" style="margin-top:12px">${['졸업요건','교과목','기한','기타'].map(x=>`<span class="${t==x?'on':''}" onclick="S.gt='${x}';R()">${x}</span>`).join('')}</div>`;
+if(t=='졸업요건')h+=`<h3>영역별 이수</h3>`+GA.map(a=>`<div style="margin:10px 0"><div class="row"><b>${a[0]}</b><span class="tg ${a[1]<a[2]?'w':''}">${a[1]} / ${a[2]} · ${a[1]<a[2]?(a[2]-a[1])+'학점 부족':'충족'}</span></div><div class="bar" style="margin:6px 0"><i style="width:${a[1]/a[2]*100}%"></i></div></div>`).join('')+`<h3>학점 외 요건</h3>`+li('외국어 인증','기준 점수 미제출','<span class="tg w">미충족</span>','')+li('졸업작품 · 2학기 제출','지도교수 상담 3 / 4회','<span class="tg w">미충족</span>','')+li('사회봉사','32 / 30시간','<span class="tg">충족</span>','');
+else if(t=='교과목')h+=`<h3>바뀐 교과목</h3>`+li('폐지 · 대체 · 미이수','전공필수예요. 대체 과목을 들어야 졸업할 수 있어요.','<span class="tg w">타이포그래피2 → 타이포와 레이아웃</span>','')+li('이수구분 변경','이미 이수했어요. 전공기초 3학점으로 다시 계산했어요.','<span class="tg">디자인사고 · 지교 → 전기</span>','')+li('과목명 변경','같은 과목으로 인정돼요. 재수강할 때는 새 과목명으로 신청해요.','<span class="tg">인터랙션디자인 → UX인터랙션</span>','')+`<h3>이번 학기 들을 수 있는 과목</h3>`+li('타이포와 레이아웃','전공필수 · 6학점 부족 · 3학점 · 화 3-4교시','','')+li('디자인리서치','전공선택 · 12학점 부족 · 3학점 · 목 5-6교시','','')+li('교양 과목 12개','교양 · 14학점 부족','','');
+else if(t=='기한')h+=`<h3>놓치면 안 되는 기한</h3>`+DL.map((d,i)=>`<div class="li row"><div><span class="tg w">${d[0]}</span> <b style="display:inline">${d[1]}</b><div class="mu">${d[2]}</div></div>${S.todo.includes(i)?'<span class="tg">✓ 추가됨</span>':`<button class="bn s" onclick="addTd(${i})">할 일에 추가</button>`}</div>`).join('');
+else h+=`<h3>그 밖의 변경</h3>`+li('재수강 · 성적 규정','재수강할 때 받을 수 있는 최고 성적이 A0 → B+로 바뀌었어요. 2025 1학기부터 적용돼요.','','')+li('군 원격강좌 학점 인정','나에게 해당하는 것만 보여요.','','')+li('지도교수 · 학과 사무실','강의실 · 건물 코드 변경','','');
+return h+`<p class="mu" style="margin-top:16px">졸업요건과 교과목 인정은 학적 정보로 자동 계산한 결과예요. 최종 확인은 학과 사무실에서 해 주세요.</p><button class="bt sec" onclick="toast('학과 사무실 문의는 이 버전에 포함되지 않았어요')">학과 사무실에 문의</button>`}
+function MD(){const m=S.md,L=S.ls;
+const b=(l,f,p)=>`<button class="bt ${p?'':'sec'}" style="margin:0;flex:1" onclick="${f}">${l}</button>`,
+dl=(t,pp,bs)=>`<div class="ov c" onclick="if(event.target===this){S.md=null;R(1)}"><div class="dl"><div class="row"><b style="font-size:17px">${t}</b><button class="modal-x" aria-label="닫기" onclick="S.md=null;R(1)">×</button></div><p class="mu" style="margin-top:8px">${pp}</p><div class="row" style="gap:8px;margin-top:18px">${bs}</div></div></div>`,
+sh=(t,body,bs)=>`<div class="ov b" onclick="if(event.target===this){S.md=null;R(1)}"><div class="sh"><div class="hd"></div><div class="row"><b style="font-size:18px;display:block;margin-bottom:10px">${t}</b><button class="modal-x" aria-label="닫기" onclick="S.md=null;R(1)">×</button></div>${body}<div style="margin-top:16px">${bs}</div></div></div>`;
+let h='';
+if(m=='les')h=L<3?dl(`${L}차시 수업 학습을 완료했어요.`,`수업이 ${3-L}개 남아있어요. 이어서 해볼까요?`,b('닫기','S.md=null;R(1)')+b('이어하기',`S.md=null;openLes(${L+1})`,1)):dl('4주차 수업을 모두 완료했어요.','수업 체크아웃을 통해 복습을 할 수 있어요. 안 해도 성적에 불이익이 가지는 않아요.',b('닫기','S.md=null;R(1)')+b('복습하기',"S.md=null;go('sum')",1));
+else if(m=='qz')h=dl('4주차 퀴즈를 완료했어요','5 / 5문항 풀이를 마쳤어요.',b('닫기',"S.md=null;S.st=[];tab('crs')",1));
+else if(m=='big')h=dl('파일 용량이 초과됐어요','final_UI_v1.pdf는 32 MB예요. 제출 가능한 파일은 30 MB 이하입니다. 용량을 줄이거나 다른 PDF 파일을 선택해 주세요.',b('닫기','S.md=null;R(1)')+b('다른 파일 선택','S.md=null;R(1)',1));
+else if(m=='cancel')h=dl('할 일 추가를 취소할까요?','홈 오늘 할 일에서 빠져요.',b('유지','S.md=null;R(1)')+b('취소하기',"S.todo=S.todo.filter(x=>x!=S.lastAdd);S.md=null;S.sn=0;R(1);toast('추가를 취소했어요')",1));
+else if(m=='idx'){const r=S.ie>=0?IDX[L-1][S.ie]:null;h=`<div class="ov b" onclick="if(event.target===this){S.md=null;R(1)}"><div class="sh"><div class="hd"></div><b style="font-size:22px;display:block;margin-bottom:16px">${r?'인덱스 수정':'인덱스 추가'}</b><div class="pv"><i>4주차 ${L}차시 ${r?r[0]:fmt(S.pos)}</i></div><div class="fr" style="margin-top:8px"><span>제목</span><input id="it" placeholder="인덱스 제목을 설정해주세요." value="${r?r[1]:''}"></div><div class="fr"><span>설명</span><input id="id" placeholder="인덱스에 대한 설명을 적어주세요." value="${r?r[2]:''}"></div><button class="bt dk" style="margin-top:12px" onclick="addIdx()">등록하기</button><button class="bt gy" style="margin-top:8px" onclick="S.md=null;R(1)">취소</button></div></div>`}
+else if(m=='chatplus')h=sh('공유하기',`<p class="mu">팀원에게 전달할 메모를 선택하세요.</p><div class="share-memo-list">${MEMOS.map((m,i)=>`<button type="button" class="share-memo-item" onclick="shareMemo(${i})"><span class="share-memo-time">${m[0]} · ${m[3]}차시</span><b>${m[1]}</b><span class="mu">${m[2]}</span><span class="share-memo-send">메모 보내기 →</span></button>`).join('')}</div>`,`<button class="bt sec" style="width:100%" onclick="S.md=null;R(1)">닫기</button>`);
+else if(m=='ask')h=sh('UX 프로토타이핑 교수님께 질문 보내기',`<p class="mu">${LN[L-1]} · ${fmt(S.pos)} 시점</p><p style="margin-top:12px"><b>제목</b></p><input id="qt" placeholder="질문 제목을 설정해주세요." value="${S.f.qTitle||''}"><p style="margin-top:12px"><b>내용</b></p><textarea id="qc" rows="3" placeholder="질문하고 싶은 내용을 적어주세요.">${S.f.qBody||''}</textarea><button class="bn s" style="margin-top:10px" onclick="toast('파일 선택은 이 버전에 포함되지 않았어요')">+ 파일 추가</button>`,`<button class="bt" style="margin:0" onclick="sendQ()">보내기</button><button class="bt sec" style="margin-top:8px" onclick="S.md=null;R(1)">취소</button>`);
+else if(m=='upload')h=dl('파일 업로드 중','final_UX.pdf · PDF · 18.4 MB<div class="bar"><i class="upload-bar" style="width:'+S.prog+'%"></i></div><p class="mu upload-percent" style="text-align:right">'+S.prog+'%</p>',b('취소',"clearInterval(S.iv);S.md=null;S.scr='s1';R()",0));
+else if(m=='deleteFile')h=dl('첨부 파일을 삭제할까요?','삭제하면 파일을 다시 선택해야 해요.',b('유지','S.md=null;R(1)')+b('파일 삭제',"S.md=null;S.scr='s1';S.prog=0;R();toast('첨부 파일을 삭제했어요')",1));
+else if(m=='submit')h=dl('최종 제출할까요?','제출 후에도 마감 전까지 파일을 수정할 수 있어요.',b('돌아가기','S.md=null;R(1)')+b('최종 제출',"S.sub=true;S.md=null;S.st=[];S.scr='done';S.tab='asg';R();toast('과제 제출이 완료됐어요')",1));
+else if(m=='leave')h=dl('작성 중인 내용을 나갈까요?','작성한 내용은 저장되지 않아요.',b('계속 작성','S.md=null;R(1)')+b('나가기',"S.md=null;back()",1));
+return h+(S.sn?`<div class="snk"><div><b>할 일에 추가했어요</b><br><span>홈 오늘 할 일에서 볼 수 있어요</span></div><button onclick="S.md='cancel';R(1)">되돌리기</button></div>`:'')}
+const $=id=>document.getElementById(id);
+const toast=t=>{const e=$('toast');e.textContent=t;e.className='on';setTimeout(()=>e.className='',1600)};
+const T=['홈','과제','수업','소통','더보기'],K=['home','asg','crs','com','more'];
+const P={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',asg:'<path d="M6 3h8l5 5v13H6zM14 3v5h5M9 13h6M9 17h6"/>',crs:'<path d="M12 6c-2-1.5-5-2-9-2v14c4 0 7 .5 9 2 2-1.5 5-2 9-2V4c-4 0-7 .5-9 2zM12 6v14"/>',com:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/>',more:'<path d="M4 7h16M4 12h16M4 17h16"/>',bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>',back:'<path d="M15 5l-7 7 7 7"/>',arrow:'<path d="M4 12h16M14 6l6 6-6 6"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',pen:'<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>'};
+const ICO=(n,s=22)=>`<svg class="i" width="${s}" height="${s}" viewBox="0 0 24 24">${P[n]}</svg>`;
+const crd=(a,b,c,f,hi)=>`<div class="cd ${hi?'hi':''}" onclick="${f}"><div class="row"><div>${a?`<span class="tg ${hi&&a.includes('D')?'w':''}">${a}</span>`:''}<b>${b}</b><span class="mu">${c}</span></div>${f&&!f.startsWith('toast')?`<span style="color:var(--pr)">${ICO('arrow',20)}</span>`:''}</div></div>`;
+const li=(a,b,c,f)=>`<div class="li" onclick="${f}"><b>${a}</b><div class="mu">${b}</div>${c?`<div style="margin-top:4px">${c}</div>`:''}</div>`;
+const ml=()=>S.les<30?1:0, sec=t=>+t.slice(0,2)*60+ +t.slice(3), fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const goTeam=()=>S.tm?go('tprj'):go('tmi');
+function filterTeamMembers(q){const v=(q||'').trim().toLowerCase();document.querySelectorAll('#teamMemberList .team-member').forEach(el=>{el.style.display=el.dataset.name.toLowerCase().includes(v)?'flex':'none'})}
+function go(s,t){S.st.push([S.scr,S.tab]);S.scr=s;if(t)S.tab=t;R()}
+function tab(k){S.st=[];S.tab=k;S.scr=k;R()}
+function back(){const p=S.st.pop();if(p){S.scr=p[0];S.tab=p[1]}clearInterval(S.pi);S.pl=false;R()}
+function openLes(n){S.ls=n;S.pos=(n==3&&S.les<30)?900:0;S.pl=false;S.pt='idx';go('ply','crs')}
+function openIdx(i){S.pl=false;clearInterval(S.pi);S.ie=i;S.md='idx';R(1)}
+function togP(){S.pl=!S.pl;clearInterval(S.pi);if(S.pl)S.pi=setInterval(()=>{S.pos=Math.min(1800,S.pos+60);if(S.pos>=1800){S.pl=false;clearInterval(S.pi);if(S.ls==3&&S.les<30)S.les=30;S.md='les'}R(1)},400);R(1)}
+function savePt(){const t=fmt(S.pos);MEMOS.push([t,'강의 메모','이 부분을 팀원과 다시 확인하기.',S.ls]);toast(t+' 시점을 저장했어요');R(1)}
+function saveMemo(){const title=$('memoTitle'),body=$('memoBody');if(!title||!body||!MEMOS[S.memo])return;const cleanTitle=title.value.trim(),cleanBody=body.value.trim();if(!cleanTitle||!cleanBody){toast('제목과 내용을 입력해 주세요');return}MEMOS[S.memo][1]=cleanTitle;MEMOS[S.memo][2]=cleanBody;S.scr='mem';S.st.pop();R();toast('메모를 저장했어요');}
+function shareMemo(i){const m=MEMOS[i],r=S.room;MSG[r].push(['나','__memo',i]);const reply='보내줘서 고마워!';MSG[r].push(['김민지',reply]);S.md=null;R();toast('메모를 공유했어요');}
+function snd(){const v=$('ci').value.trim();if(!v)return;const r=S.room;MSG[r].push(['나',v]);R();setTimeout(()=>{MSG[r].push(['김민지',r=='team'?'좋아요. 오늘 6시까지 작업에 올릴게요.':'고마워! 정리되면 보내 줘.']);R()},900)}
+function up(){S.prog=0;S.st.pop();S.st.push(['s1',S.tab]);S.scr='s2';S.md='upload';R();S.iv=setInterval(()=>{S.prog=Math.min(100,S.prog+10);R(1);if(S.prog>=100){clearInterval(S.iv);S.md=null;R(1);toast('파일이 업로드됐어요')}},280)}
+function nq(){if(S.qi==4){S.qd=true;S.md=null;S.st=[];S.scr='qres';S.tab='crs';R();return}S.qi++;S.qs=null;S.qr=false;R()}
+const Q=[
+['결제가 완료됐는지 바로 알려 주는 원칙은?','시스템 상태의 가시성','일관성과 표준',0,'결제 결과를 사용자가 확인할 수 있게 안내해요.'],
+['사용성 테스트 과업에 제시할 정보는?','버튼을 누르는 순서','사용자의 상황과 목표',1,'참가자가 경로를 스스로 선택할 수 있어야 해요.'],
+['참가자가 어디에서 망설였는지 기록하는 사람은?','관찰자','참가자',0,'관찰자는 조작과 발화, 망설임을 기록해요.'],
+['SEQ는 언제 묻나요?','테스트 시작 전','각 과업 직후',1,'각 과업의 난이도를 7점 척도로 확인해요.'],
+['어떤 사용성 문제를 먼저 고치나요?','과업 완료를 막는 문제','발견 순서가 가장 빠른 문제',0,'영향이 크거나 반복하는 문제부터 개선해요.']
+];
+const lessonCard=()=>S.les<30?crd('','이어서 학습 · 3차시 테스트 설계','UX 프로토타이핑 · 4주차 · 15분 수강',"openLes(3)")
+ :!S.qd?crd('','4주차 퀴즈 시작하기','UX 프로토타이핑 · 출석 인정 3 / 3',"S.qi=0;S.qs=null;S.qr=false;go('quiz','crs')")
+ :crd('','4주차 퀴즈 결과 보기','UX 프로토타이핑 · 퀴즈 5 / 5문항 완료',"go('qres','crs')");
+const tasks=()=>[['화면 통합','담당 한지민 (나) · 마감 11.18 18:00',TS[S.task],"go('tdet')"]].concat(S.tm==2?[[S.at,'담당 김민지 · 마감 11.19 18:00','시작 전',"go('taskdetail')"]]:[]);
+const bub=(m,i)=>m[0]=='나'?`<div class="msg me" ${m[1]=='__memo'?`onclick="S.memo=${m[2]};go('sharedMemo')" style="cursor:pointer"`:''}>${m[1]=='__memo'?memoTxt(m[2]):m[1]}</div>`:`<div class="msg"><small>${m[0]}</small>${m[1]}</div>`;
+const memoTxt=i=>{const m=MEMOS[i];return `UX 프로토타이핑 · ${m[3]}차시<br><b>${m[0]} · ${m[1]}</b><br>${m[2]}`};
+const V={
+home:()=>`<h2>지민님, 안녕하세요</h2><p class="mu">건국대학교 · 2026학년도 2학기</p><p class="mu">11월 17일 화요일 · 미제출 ${S.sub?1:2}건 · 미수강 ${ml()}개</p>
+${banner()}${S.sub?crd('제출 완료','Final Prototype','UX 프로토타이핑 · 11.17 (화) 15:42 제출',"S.flt='제출 완료';tab('asg')",1):crd('마감 임박 과제 D−1','Final Prototype','UX 프로토타이핑 · 11.18 (수) 23:59',"go('det','asg')",1)}
+${lessonCard()}
+<div class="cd" style="cursor:default"><b style="font-size:16px">이번 주 일정 · 11.16–11.22</b><div class="wk">${['월 16','화 17','수 18','목 19','금 20','토 21','일 22'].map((d,i)=>`<div class="${i==1?'on':''}">${d.split(' ')[0]}<b>${d.split(' ')[1]}</b></div>`).join('')}</div><span class="mu">11.20 (금) 18:00 · 인터뷰 결과 정리</span></div>
+<h3>오늘 할 일</h3>${S.todo.length?S.todo.map(i=>li(DL[i][1],DL[i][2],`<span class="tg w">${DL[i][0]}</span>`,'')).join(''):'<p class="mu">추가한 할 일이 없어요. 졸업 체크의 기한에서 추가할 수 있어요.</p>'}<p style="margin:16px 0 4px"><b>학과 공지</b></p><p class="mu">2학기 학사 일정 안내</p>${crd('','전체 메모','수업 중 저장한 기록과 메모',"go('memos','more')")}`,
+asg:()=>{const L=[['Final Prototype','UX 프로토타이핑 · '+(S.sub?'11.17 (화) 15:42 제출':'11.18 (수) 23:59'),S.sub?'제출 완료':'D-1',"go('det')"],['인터뷰 결과 정리','Design Research · 11.20 (금) 18:00','미제출',''],['Midterm Wireframe','Interaction Design · 11.12 제출','제출 완료',''],['Research Report','UX 프로토타이핑 · 92점','채점 완료','']];
+const ok=t=>t=='제출 완료'||t=='채점 완료';
+return `<div class="ch">${['전체','미제출','제출 완료'].map(f=>`<span class="${S.flt==f?'on':''}" onclick="S.flt='${f}';R()">${f}</span>`).join('')}</div>`+L.filter(l=>S.flt=='전체'||(S.flt=='미제출'?!ok(l[2]):ok(l[2]))).map(l=>`<div class="li" onclick="${l[3]}"><div class="row"><b>${l[0]}</b><span class="tg ${l[2]=='D-1'?'w':''}">${l[2]}</span></div><span class="mu">${l[1]}</span></div>`).join('')},
+det:()=>`<span class="mu">UX 프로토타이핑</span><h2>Final Prototype</h2><span class="tg ${S.sub?'':'w'}">${S.sub?'제출 완료':'미제출'}</span> <span class="mu">11.18 (수) 23:59 마감</span>
+<h3>과제 안내</h3><p>최종 프로토타입을 PDF로 제출하세요. 사용성 테스트 결과를 반영해 주세요.</p><div class="cd" style="cursor:default">📄 Final Prototype Guide.pdf<br><span class="mu">첨부자료 · PDF</span></div><p class="mu">개인 과제 · PDF 1개 · 30 MB 이하</p>
+<h3>PDF에 포함할 내용</h3><p><b>01 테스트 과업</b><br><span class="mu">참가자에게 제시한 상황과 목표, 과업별 성공 기준</span></p><p><b>02 관찰 결과</b><br><span class="mu">참가자가 막힌 화면과 선택한 경로</span></p><p><b>03 수정 화면</b><br><span class="mu">발견한 문제를 반영한 최종 프로토타입</span></p>
+${S.sub?`<div class="cd hi" style="cursor:default">제출 시각 · 11.17 (화) 15:42<br>final_UX.pdf · 18.4 MB</div>`:`<button class="bt" onclick="go('s1')">과제 제출하기</button>`}`,
+s1:()=>`<span class="tg">제출 1단계</span><h2>제출 파일 추가 0 / 1</h2><p class="mu">PDF만 등록할 수 있어요. 최대 30 MB</p><p class="mu">파일을 추가하면 제출 내용을 확인할 수 있어요.</p><button class="bt" onclick="go('pick')">PDF 파일 추가</button>`,
+pick:()=>`<h2>파일 선택</h2><p class="mu">30 MB 이하의 PDF 한 개를 선택하세요.</p>${li('final_UX.pdf','18.4 MB · 오늘 수정','',"up()")}${li('final_UI_v1.pdf','32 MB · 11.14 수정','',"S.md='big';R(1)")}`,
+big:()=>`<h2 style="color:var(--er)">30 MB를 초과한 파일이에요</h2><p>용량이 더 작은 PDF를 선택해 주세요.</p><div class="cd" style="cursor:default">final_UI_v1.pdf<br><span class="mu">32 MB · 허용 용량 30 MB</span></div><button class="bt" onclick="back()">다른 파일 선택</button>`,
+upl:()=>`<span class="tg">업로드 중</span><h2>파일 업로드 중</h2><p>final_UX.pdf · 18.4 MB</p><div class="bar"><i style="width:${S.prog}%"></i></div><p class="mu">${S.prog}% · 아직 제출 전이에요.</p><button class="bt sec" onclick="clearInterval(S.iv);S.st=[];S.scr='s1';R()">제출 전 확인 취소</button>`,
+s2:()=>`<span class="tg">과제 제출 · 첨부 완료</span><h2>제출 파일 <span style="float:right;font-size:13px">1 / 1</span></h2><div class="file-row"><div class="file-icon">▤</div><div style="flex:1"><b>final_UX.pdf</b><div class="mu">PDF · 18.4 MB · 업로드 완료</div></div><span>›</span></div><button class="bt sec" style="margin-top:0" onclick="S.md='deleteFile';R(1)">파일 삭제</button><h3>제출 전 확인</h3><div class="status-line"><div><b>파일 확인</b><div class="mu">미리보기에서 최종본이 맞는지 확인해 주세요.</div></div><button class="mini-action" onclick="go('prev')">미리보기</button></div><div class="status-line"><div><b>제출 상태</b><div class="mu">아직 제출 전이에요. 다음 화면에서 최종 제출할 수 있어요.</div></div></div><div class="notice-card">✓ 파일이 업로드됐어요</div><button class="bt" onclick="go('s3')">제출 내용 확인</button>`,
+prev:()=>`<span class="mu">1 / 1 · final_UX.pdf</span><h2>HELLOLMS</h2><h2 style="margin-top:12px">Final Prototype</h2><p class="mu">사용성 테스트 결과 및 LMS 리디자인 화면</p><div class="cd" style="border-radius:0;cursor:default"><b>자료 구성</b><div class="status-line"><div><b>01 테스트 개요</b><div class="mu">참가자에게 제시한 과업과 성공 기준</div></div></div><div class="status-line"><div><b>02 사용성 평가 결과</b><div class="mu">행동 관찰과 과업별 문제</div></div></div><div class="status-line"><div><b>03 수정된 와이어프레임</b><div class="mu">과제 제출 · 수업 · 팀 프로젝트 · 복학생 안내</div></div></div></div><button class="bt sec" onclick="back()">첨부 파일로 돌아가기</button>`,
+s3:()=>`<span class="tg">최종 확인</span><h2>제출 내용을 확인해 주세요</h2><div class="file-row"><div class="file-icon">▤</div><div><b>final_UX.pdf</b><div class="mu">PDF · 18.4 MB</div></div></div><div class="status-line"><div><b>제출 대상</b><div class="mu">UX 프로토타이핑 담당 교수님</div></div></div><div class="status-line"><div><b>수정 가능 기한</b><div class="mu">11.18 (수) 23:59까지</div></div></div><p class="mu" style="margin-top:14px">최종 제출하면 파일이 담당 교수님에게 전달돼요.</p><button class="bt" onclick="S.md='submit';R(1)">최종 제출</button>`,
+done:()=>`<h2>✓ 과제 제출 완료</h2><div class="cd hi" style="cursor:default"><b>Final Prototype</b>제출 시각 · 11.17 (화) 15:42<br>final_UX.pdf · PDF · 18.4 MB</div><button class="bt" onclick="S.flt='전체';tab('asg')">과제 목록으로</button>`,
+crs:()=>`<span class="mu">2026학년도 2학기 · 전공</span><h2>UX 프로토타이핑</h2><p class="mu">${S.week}주차 / 수강 진도 ${S.week==4?(S.les<30?2:3):0} / 3 · ${S.week==4?(S.les<30?'1개 차시 남음':'출석 인정 3/3'):'학습 시작 전'}</p><div class="ch" style="margin:14px 0 18px">${[1,2,3,4,5].map(n=>`<span class="${S.week==n?'on':''}" onclick="S.week=${n};R()">${n}주차</span>`).join('')}</div>
+<h3>${S.week}주차 수업 · 총 3개 차시</h3>
+${[1,2,3].map(n=>li(`${n}차시 · ${S.week==4?LN[n-1]:['강의 소개','핵심 개념','학습 정리'][n-1]}`,S.week==4?(n<3||S.les>=30?'총 30분 · 출석 인정':'30분 중 15분 수강 · 출석 인정 전'):'총 30분 · 수강 전',S.week==4&&n==3&&S.les<30?'<span class="tg">이어보기</span>':'',`S.ls=${n};S.pos=0;openLes(${n})`)).join('')}
+${S.week==4?`<h3>수업 체크아웃</h3>${crd('','4주차 강의 핵심 요약',S.les<30?'강의 수강 완료 후 확인':'차시별 요약과 체크리스트',S.les<30?"toast('수강 완료 후 확인할 수 있어요')":"go('sum')")}${crd('','4주차 퀴즈',S.qd?'퀴즈 완료 · 5 / 5문항':S.les<30?'응시 조건 · 3차시 출석 인정':'응시 가능 · 5문항',S.les<30?"toast('3차시 출석 인정 후 응시할 수 있어요')":S.qd?"go('qres')":"S.qi=0;S.qs=null;S.qr=false;go('quiz')")}`:`<div class="notice-card">${S.week}주차 학습 자료를 선택해 수강할 수 있어요.</div>`}${crd('','팀 프로젝트','팀 구성과 공동 과제',"goTeam()")}`,
+ply:()=>{const L=S.ls,I=IDX[L-1],M=MEMOS.map((m,i)=>[m,i]).filter(x=>x[0][3]==L),cur=I.filter(r=>sec(r[0])<=S.pos).length-1,hit=I.findIndex(r=>sec(r[0])==S.pos);
+const tabs=['idx','memo','qa'],nm={idx:'인덱스',memo:'메모',qa:'QnA'};
+const body=S.pt=='idx'?I.map((r,i)=>`<div class="ir ${i==cur?'on':''}"><span class="pl" onclick="S.pos=${sec(r[0])};R(1)" style="cursor:pointer">▶</span><div style="flex:1;cursor:pointer" onclick="S.pos=${sec(r[0])};R(1)"><div class="tm">${r[0].replace(/^0/,'')}</div><div class="mu">${r[1]}<br>${r[2]}</div></div><button onclick="openIdx(${i})" style="background:none;border:0;color:var(--tx)">${ICO('pen',20)}</button></div>`).join('')
+:S.pt=='memo'?`<h3 style="margin-top:20px">이 강의의 내 기록</h3><p class="mu">나만 볼 수 있어요. 메모를 열어 수정하거나 공유해요.</p>`+(M.length?M.map(x=>li(x[0][0]+' · 저장한 시점',x[0][1],x[0][2],`S.memo=${x[1]};go('mem')`)).join(''):'<p class="mu" style="margin-top:12px">저장한 메모가 없어요.</p>')+`<button class="bt" onclick="savePt()">메모 남기기 · ${fmt(S.pos)}</button>`
+:`<h3 style="margin-top:20px">수업 Q&A</h3><p class="mu">교수님과 이 수업 수강생에게 공개된 질문이에요.</p>`+(QA.some(q=>q[3]==L)?QA.filter(q=>q[3]==L).map((q,i)=>li(q[0],q[4]+' · '+LN[q[3]-1],'<span class="tg">'+q[2]+'</span>',`S.f.qIndex=${QA.indexOf(q)};go('qdetail')`)).join(''):'<p class="mu" style="margin-top:12px">등록된 질문이 없어요.</p>')+`<button class="bt sec" onclick="S.md='ask';R(1)">질문 작성</button>`;
+return `<div class="vid" onclick="togP()"><span>${S.pl?'❚❚ 재생 중':'▶ 탭하여 재생'}</span><div class="gr"></div><div class="ct"><span>${fmt(S.pos)} / 30:00</span>${hit>=0?`<button class="pill" onclick="event.stopPropagation();openIdx(${hit})">${I[hit][1]} ›</button>`:`<button class="pill" onclick="event.stopPropagation();openIdx(-1)">+</button>`}<button class="pill" onclick="event.stopPropagation();S.f.speed=S.f.speed==1.5?1:S.f.speed==1?1.25:1.5;R(1)">${S.f.speed||1}×</button><button class="pill" onclick="event.stopPropagation();toast('전체 화면 미리보기')">⛶</button></div><div class="pb" style="width:${S.pos/18}%"></div></div>
+<div class="ut">${tabs.map(t=>`<span class="${S.pt==t?'on':''}" onclick="S.pt='${t}';R(1)">${nm[t]}</span>`).join('')}</div>${body}`},
+quiz:()=>{const q=Q[S.qi],r=S.qr,correct=S.qs===q[3];return `<div class="quiz-head"><div class="row" style="align-items:center;justify-content:space-between"><span class="tg">4주차 퀴즈</span><span class="mu">사용성 평가</span></div><div class="quiz-progress"><i style="width:${(S.qi+1)*20}%"></i></div><div class="quiz-count"><b>문항 ${S.qi+1} / 5</b><span class="mu">${r?'해설':'답을 하나 선택하세요.'}</span></div></div><h2 class="quiz-question">${q[0]}</h2><div class="quiz-options">${[1,2].map((n,i)=>`<button type="button" class="quiz-option ${S.qs===i?'selected':''} ${r&&i===q[3]?'correct':''} ${r&&S.qs===i&&!correct?'wrong':''}" ${r?'disabled':`onclick="S.qs=${i};S.qr=true;R()"`}><span class="quiz-letter">${'AB'[i]}</span><span>${q[n]}</span><span class="quiz-radio">${S.qs===i?'✓':''}</span></button>`).join('')}</div>${r?`<div class="quiz-feedback ${correct?'is-correct':'is-wrong'}"><b>${correct?'정답이에요':'다시 풀어 보세요'}</b><p>${q[4]}</p></div><button class="bt quiz-action" onclick="${correct?'nq()':'S.qs=null;S.qr=false;R()'}">${correct?(S.qi===4?'결과 확인':'다음 문항'):'이 문항 다시 풀기'}</button>`:``}`},
+qres:()=>`<div class="quiz-result"><span class="tg">4주차 퀴즈</span><h2>퀴즈 결과</h2><div class="quiz-score"><strong>5 / 5</strong><span>문항 풀이 완료</span></div><p class="mu">5개 문항의 답변과 해설 확인이 끝났어요.</p><button class="bt" style="width:100%" onclick="S.st=[];S.scr='crs';S.tab='crs';R();">학습 화면으로 돌아가기</button><button class="bt sec" style="width:100%;margin-top:8px" onclick="S.qi=0;S.qs=null;S.qr=false;go('quiz','crs')">퀴즈 다시 풀기</button></div>`,
+sum:()=>`<div class="summary-page"><span class="tg">4주차 · 학습 노트</span><h2>수업 핵심 정리</h2><p class="mu">퀴즈 해설이 아닌, 차시별 강의 내용을 복습하는 공간이에요.</p><section class="summary-card"><div class="summary-no">01 · 1차시</div><h3>사용성 원칙</h3><p>사용자가 제품이나 서비스를 얼마나 쉽게 이해하고 목적을 달성할 수 있는지 살펴봅니다.</p><ul><li><b>효과성</b> — 원하는 목표를 정확하게 달성하는가</li><li><b>효율성</b> — 목표를 달성하는 데 시간과 노력이 적게 드는가</li><li><b>학습 용이성</b> — 처음 사용해도 방법을 쉽게 익힐 수 있는가</li><li><b>기억 용이성</b> — 다시 사용할 때 방법을 쉽게 떠올릴 수 있는가</li></ul></section><section class="summary-card"><div class="summary-no">02 · 2차시</div><h3>UI 화면 평가</h3><p>화면의 정보가 사용자의 시선과 행동 흐름에 맞게 구성되어 있는지 확인합니다.</p><ul><li><b>시각적 위계</b> — 중요한 정보가 먼저 인식되는가</li><li><b>타이포그래피</b> — 글자 크기와 굵기가 정보의 중요도를 전달하는가</li><li><b>시각적 대비</b> — 요소와 배경이 명확하게 구분되는가</li></ul></section><section class="summary-card"><div class="summary-no">03 · 3차시</div><h3>사용성 테스트 설계</h3><p>참가자가 실제 사용자처럼 과업을 수행하는 과정을 관찰하고 문제를 발견합니다.</p><ul><li><b>과업 설계</b> — 사용자의 상황과 목표를 제시하고 해결 경로는 제한하지 않기</li><li><b>성공 기준</b> — 과업을 완료했다고 판단할 조건을 미리 정하기</li><li><b>Think Aloud</b> — 참가자가 생각하는 내용을 말하도록 요청해 판단 과정을 이해하기</li></ul></section><div class="summary-end"><b>복습을 마쳤나요?</b><p class="mu">확인 완료를 누르면 4주차 수업 화면으로 돌아갑니다.</p></div><button class="bt" style="width:100%" onclick="S.sd=true;S.st=[];S.tab='crs';S.scr='crs';R();toast('핵심 요약을 확인했어요')">요약 확인 완료</button></div>`,
+fin:()=>`<h2>4주차 학습을 마쳤어요</h2><p class="mu">강의 3 / 3 · 퀴즈 5 / 5 · 간단 정리 확인</p><div class="cd hi" style="cursor:default"><p>✓ 1차시 · 사용성 원칙</p><p>✓ 2차시 · UI 화면 평가</p><p>✓ 3차시 · 테스트 설계</p><p>✓ 퀴즈 5문항 풀이</p><p>✓ 핵심 정리 확인</p></div><button class="bt" onclick="tab('crs')">수업으로 돌아가기</button>`,
+com:()=>`<div class="ch">${['대화','수업 Q&A','팀 관리'].map(f=>`<span class="${S.ct==f?'on':''}" onclick="S.ct='${f}';R()">${f}</span>`).join('')}</div>`+(S.ct=='대화'?`<h3 style="margin-top:12px">최근 대화</h3>${li(S.tname,'김민지 · 오후 2:30',MSG.team.at(-1)[1]=='__memo'?'메모를 공유했어요':MSG.team.at(-1)[1],"S.room='team';go('chat')")}${li('김민지','1:1 대화 · 어제',MSG.mj.at(-1)[1],"S.room='mj';go('chat')")}${li('전체 메모','내가 저장한 시점과 개인 메모','',"go('memos')")}`
+:S.ct=='수업 Q&A'?`<h3 style="margin-top:12px">UX 프로토타이핑</h3>${QA.map((q,i)=>li(q[0],q[4]+' · '+LN[q[3]-1],'<span class="tg">'+q[2]+'</span>',`S.f.qIndex=${i};go('qdetail')`)).join('')}`
+:`<h3 style="margin-top:12px">팀 프로젝트</h3>${S.tm?crd('',S.tname,'LMS 리디자인 · 팀원 2명 · 수락 대기 0명',"goTeam()"):crd('','아직 팀이 없어요','팀을 구성하고 팀 과제를 시작하세요',"goTeam()")}`),
+chat:()=>`<div style="display:flex;flex-direction:column;min-height:100%"><div class="mu" style="text-align:center">11월 17일 화요일</div>${MSG[S.room].map(bub).join('')}<div class="ci"><button class="chat-plus" type="button" aria-label="메모 및 파일 공유" title="공유하기" onclick="S.md='chatplus';R(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><input id="ci" placeholder="메시지 입력" onkeydown="if(event.key=='Enter')snd()"><button class="send-icon" type="button" aria-label="메시지 전송" title="전송" onclick="snd()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4 20-7Z" /></svg></button></div></div>`,
+tmi:()=>`<span class="mu">UX 프로토타이핑 / 팀 과제</span><h2>LMS 리디자인</h2><p class="mu">11.20 (금) 23:59 · 2인 팀</p><h3>팀 구성</h3><div class="cd hi" style="cursor:default"><b>아직 팀이 없어요</b><span class="mu">팀원을 초대하고 팀장을 정해 공동 과제를 시작할 수 있어요.</span><button class="bt" style="width:100%;margin-top:14px" onclick="S.pk=false;go('tpick')">팀 구성 시작하기</button></div><h3>받은 초대</h3><div class="cd" style="cursor:default"><span class="mu">받은 초대가 없어요 · 0건</span></div>`,
+tpick:()=>`<span class="tg">팀 구성 · 1단계</span><h2>팀원 초대하기</h2><p class="mu">함께 과제를 진행할 수강자를 선택해 주세요. 현재 2인 팀 과제입니다.</p><div class="cd" style="cursor:default"><b>수강자 검색</b><input id="teamSearch" placeholder="이름으로 검색" oninput="filterTeamMembers(this.value)" style="margin-top:8px;width:100%"></div><div id="teamMemberList">${[['김민지','디자인학과 · 24학번','초대 가능'],['이서연','디자인학과 · 24학번','팀 소속'],['박준호','디자인학과 · 25학번','연락처 비공개']].map((m,i)=>`<div class="li row team-member ${i==0?'selectable':'unavailable'}" data-name="${m[0]}" ${i==0?`onclick="S.pk=!S.pk;R(1)" style="${S.pk?'background:var(--sc);border-radius:12px;padding:12px':''}"`:'style="opacity:.48;cursor:not-allowed"'}><div><b>${m[0]}</b><span class="mu">${m[1]}</span></div><span class="tg">${i==0&&S.pk?'✓ 선택됨':m[2]}</span></div>`).join('')}</div><p class="mu" style="margin-top:12px">${S.pk?'1명 선택됨':'팀원 1명을 선택해 주세요.'}</p><button class="bt" style="width:100%" ${S.pk?'':'disabled'} onclick="go('tinv')">${S.pk?'초대 보내기':'팀원 선택 후 계속'}</button><button class="bt sec" style="width:100%;margin-top:8px" onclick="back()">취소</button>`,
+tinv:()=>`<span class="tg">팀 구성 · 2단계</span><h2>초대를 보냈어요</h2><div class="cd hi" style="cursor:default"><b>김민지님 · 초대 응답 대기</b><span class="mu">디자인학과 · 24학번</span></div><p class="mu">초대가 전송됐어요. 프로토타입에서는 응답 대기 상태로 다음 단계에 진행할 수 있어요.</p><button class="bt" style="width:100%" onclick="go('tlead')">팀 구성 계속하기</button><button class="bt sec" style="width:100%;margin-top:8px" onclick="go('tpick')">다른 팀원 선택</button>`,
+tlead:()=>`<span class="tg">팀 구성 1 / 2</span><h2>팀장 선출하기</h2><p class="mu">팀을 대표할 사람을 선택하세요.</p>${['한지민 · 나','김민지 · 팀원'].map((n,i)=>`<div class="opt ${S.lead==i?'s':''}" onclick="S.lead=${i};R()">${n}</div>`).join('')}<button class="bt" onclick="go('tname')">${S.lead?'김민지':'한지민'}님을 팀장으로 지정</button>`,
+tname:()=>`<span class="tg">팀 구성 2 / 2</span><h2>팀 이름 정하기</h2><p class="mu">팀 이름</p><input id="tn" value="${S.tname}"><p class="mu" style="margin-top:12px">팀장 · ${S.lead?'김민지':'한지민'}<br>팀에서 공유하는 정보 · 역할, 진행 상태, 팀 과제 마감</p><button class="bt" onclick="S.tname=$('tn').value||S.tname;S.tm=1;S.st=[['tmi','crs']];S.scr='tprj';R();toast('팀이 만들어졌어요')">이 이름으로 팀 만들기</button>`,
+tprj:()=>`<span class="mu">UX 프로토타이핑 / 내 팀</span><h2>${S.tname}</h2><p class="mu">LMS 리디자인 · 11.20 (금) 23:59</p><div class="notice-card"><b>팀 과제 진행 중</b><p class="mu">팀원 2명 · 초대 대기 0명</p></div><h3>팀원과 공동 작업</h3>${li('한지민',S.lead?'팀원 · 나':'팀장 · 나','','')}${li('김민지',S.lead?'팀장':'팀원','','')} ${crd('','팀 작업 현황','할 일 2 · 진행 중 0 · 완료 0',"go('team')")}${crd('','팀원 관리','팀원 초대와 역할 확인',"go('teamMembers')")}${crd('','팀 과제 제출','팀원 모두 제출 현황을 볼 수 있어요 · 미제출',"toast('팀 과제 제출 화면을 준비 중이에요')") }<h3>팀 소통</h3>${crd('','팀 채팅','공유된 메모와 결정한 내용을 확인해요',"S.room='team';go('chat','com')")}${crd('','팀원 추가','수강자에게 초대 보내기',"go('tpick')")}`,
+team:()=>{const t=tasks();return `<h2>팀 작업 현황</h2><p class="mu">${S.tname} · LMS 리디자인</p><p class="mu">할 일 ${t.filter(x=>x[2]=='시작 전').length} · 진행 중 ${t.filter(x=>x[2]=='진행 중').length} · 완료 ${t.filter(x=>x[2]=='완료').length}</p><div class="ch">${['작업','채팅','팀 2'].map((x,i)=>`<span class="${i==0?'on':''}" onclick="${i==1?`S.room='team';go('chat','com')`:i==2?`go('teamMembers')`:`R()`}">${x}</span>`).join('')}</div>${t.map(x=>crd(x[2],x[0],x[1],x[3])).join('')}<div class="cd" onclick="S.memo=0;go('mem')"><span class="mu">공유한 메모 · 03:50</span><b>사용성 원칙</b></div><button class="bt" onclick="S.am=false;go('asn')">작업 배정하기</button>`},
+asn:()=>`<h2>과제 부여</h2><p class="mu">${S.tname} · 팀원에게 할 일을 배정해 주세요.</p><p style="margin-top:12px"><b>과제 제목</b></p><input id="at" value="${S.at}"><p style="margin-top:12px"><b>담당 팀원</b></p><div class="opt row" onclick="S.at=$('at').value;S.ad=$('ad').value;go('asp')"><span>${S.am?'김민지':'팀원 선택'}</span>${ICO('arrow',18)}</div><p><b>마감</b></p><p class="mu">11.19 (목) 18:00</p><p style="margin-top:12px"><b>상세 내용</b></p><textarea id="ad" rows="3">${S.ad}</textarea><button class="bt" ${S.am?'':'disabled'} onclick="S.at=$('at').value;S.ad=$('ad').value;go('asc')">배정 내용 확인</button>`,
+asp:()=>`<h2>담당 팀원</h2><p class="mu">과제를 받을 팀원을 선택해 주세요.</p>${li('김민지','디자인학과 · 24학번','<span class="tg">선택하기</span>',"S.am=true;back()")}${li('한지민 · 나','팀장 · 디자인학과 · 24학번','','')}`,
+asc:()=>`<h2>배정 내용 확인</h2><div class="cd hi" style="cursor:default"><b>${S.at}</b>담당 김민지<br>마감 11.19 (목) 18:00<br><span class="mu">${S.ad}</span></div><p class="mu">배정하면 김민지님의 팀 작업 목록에 추가돼요.</p><button class="bt" onclick="S.tm=2;S.st=[['team','crs']];S.scr='asd';R()">김민지에게 과제 부여</button>`,
+asd:()=>`<h2>과제를 배정했어요</h2><p class="mu">김민지님에게 ${S.at}을(를) 배정했어요.</p><div class="cd hi" style="cursor:default"><b>${S.at}</b>담당 김민지 · 시작 전<br>마감 11.19 (목) 18:00<br><span class="mu">${S.ad}</span></div><h3>김민지님의 질문</h3><div class="cd" style="cursor:default">테스트 참가자는 같은 학과 학생으로 모집해도 될까요?</div><button class="bt sec" onclick="go('answer')">팀원 질문에 답변</button><button class="bt" onclick="go('team')">팀 작업 현황 보기</button>`,
+tdet:()=>`<span class="tg">${TS[S.task]}</span><h2>화면 통합</h2><p class="mu">한지민 (나) · 11.18 (수) 18:00 마감</p><h3>작업 내용</h3><p>과제 제출 화면과 사용성 테스트 결과를 통합해 주세요.</p><div class="cd" onclick="S.memo=0;go('mem')"><span class="mu">참고 메모 · 03:50 보기 →</span><b>사용성 원칙</b></div><button class="bt sec" onclick="S.room='team';go('chat','com')">팀 채팅에서 질문하기</button>${S.task<2?`<button class="bt" onclick="S.task++;R();toast('${S.task?'완료':'작업을 시작'}했어요')">${S.task?'완료로 변경':'작업 시작'}</button>`:`<button class="bt" onclick="go('team')">팀 작업 보기</button>`}`,
+memos:()=>`<p class="mu">나만 볼 수 있는 기록이에요.</p><select style="width:100%;padding:11px;border:1px solid var(--ln);border-radius:9px;background:#fff;color:#222;margin:10px 0" onchange="S.f.memoFilter=this.value;R(1)"><option value="전체" ${!S.f.memoFilter||S.f.memoFilter=='전체'?'selected':''}>모든 수업</option><option value="UX 프로토타이핑" ${S.f.memoFilter=='UX 프로토타이핑'?'selected':''}>UX 프로토타이핑</option></select>${MEMOS.map((m,i)=>li(m[1],`UX 프로토타이핑 · ${m[3]}차시 · ${m[0]}`,m[2],`S.memo=${i};go('mem')`)).join('')}`,
+mem:()=>{const m=MEMOS[S.memo];return `<span class="mu">UX 프로토타이핑 · ${m[3]}차시</span><h2>${m[0]} · ${m[1]}</h2><span class="tg">나만 보기</span><p style="margin-top:12px">${m[2]}</p><button class="bt sec" onclick="S.ls=${m[3]};S.pos=${sec(m[0])};S.pt='memo';go('ply')">이 시점 강의 보기</button><button class="bt sec" onclick="go('memoEdit')">메모 수정</button><button class="bt" onclick="go('shr')">공유하기</button>`},
+shr:()=>`<h2>메모 공유</h2><div class="cd hi" style="cursor:default">${memoTxt(S.memo)}</div><p class="mu">선택한 메모와 강의 시점만 전달돼요.</p><h3>받는 사람</h3>${[S.tname+' · 팀 채팅','김민지 · 1:1 채팅'].map((n,i)=>`<div class="opt ${S.rc==i?'s':''}" onclick="S.rc=${i};R(1)">${n}</div>`).join('')}<button class="bt" onclick="go('shareConfirm')">공유 내용 확인</button>`,
+grad:()=>gradV(),more:()=>`${gradCard()}${crd('','알림','과제 마감 · 다음 과제 일정 · 학습 현황',"go('noti')")}${crd('','전체 메모','수업 중 저장한 기록과 메모',"go('memos')")}${crd('','팀 작업 현황','담당 작업과 팀원 초대 상태',"goTeam()")}${crd('','이번 주 일정','11.16 – 11.22',"go('calendar')")}`
+};
+
+V.noti=()=>`<h2>알림</h2><p class="mu">놓치면 안 되는 일정과 학습 소식을 모았어요.</p>
+<div class="notice-card" onclick="go('det','asg')"><span class="tg">과제 마감</span><b style="display:block;margin:5px 0">Final Prototype</b><p class="mu">11.18 (수) 23:59 · 마감까지 하루 남았어요.</p></div>
+<div class="notice-card" onclick="go('asg')"><span class="tg">다음 과제 일정</span><b style="display:block;margin:5px 0">인터뷰 결과 정리</b><p class="mu">11.20 (금) 18:00 · Design Research</p></div>
+<div class="notice-card" onclick="go('crs','crs')"><span class="tg">학습 현황</span><b style="display:block;margin:5px 0">UX 프로토타이핑 · 4주차</b><p class="mu">3차시 수강을 이어서 완료해 주세요.</p></div>`;
+V.calendar=()=>`<h2>이번 주 일정</h2><p class="mu">2026.11.16 – 11.22</p><div class="wk">${['월 16','화 17','수 18','목 19','금 20','토 21','일 22'].map((d,i)=>`<div class="${i==1?'on':''}">${d.split(' ')[0]}<b>${d.split(' ')[1]}</b></div>`).join('')}</div>
+<div class="status-line"><div><b>11.18 (수) 18:00</b><div class="mu">화면 통합 · 팀 프로젝트</div></div><span class="tg">D-1</span></div>
+<div class="status-line"><div><b>11.18 (수) 23:59</b><div class="mu">Final Prototype · UX 프로토타이핑</div></div><span class="tg">D-1</span></div>
+<div class="status-line"><div><b>11.19 (목) 18:00</b><div class="mu">사용성 테스트 준비 · 김민지</div></div></div>
+<div class="status-line"><div><b>11.20 (금) 18:00</b><div class="mu">인터뷰 결과 정리 · Design Research</div></div></div>`;
+V.qconfirm=()=>`<span class="tg">UX 프로토타이핑 · 수업 공개 질문</span><h2>질문 등록 확인</h2><div class="cd" style="cursor:default"><span class="mu">질문 제목</span><b>${S.f.qTitle||''}</b><p class="mu" style="margin-top:12px">질문 내용</p><p>${S.f.qBody||''}</p></div><p class="mu">교수님과 이 수업의 수강생이 볼 수 있어요.</p><div class="notice-card">첨부한 강의 시점 · ${S.ls}차시 ${S.f.qTime}</div><button class="bt" onclick="QA.push([S.f.qTitle,S.f.qBody,'답변 대기',S.ls,S.f.qTime]);S.f.qIndex=QA.length-1;go('qdetail');toast('질문을 등록했어요')">질문 등록</button><button class="bt sec" onclick="S.md='ask';S.scr='ply';R(1)">수정하기</button>`;
+V.qdetail=()=>{const q=QA[S.f.qIndex]||QA[0];return `<span class="tg">${q[2]}</span><h2>${q[0]}</h2><p class="mu">한지민 · 11.17 14:35 · ${q[2]}</p><p style="margin:18px 0">${q[1]}</p><div class="cd hi" onclick="S.ls=q[3];S.pos=sec(q[4]||'03:50');go('ply','crs')"><span class="mu">UX 프로토타이핑 · ${q[3]}차시 ${q[4]||'03:50'}</span><b>이 시점 강의 보기 →</b></div><h3>답변 ${q[5]?1:0}</h3>${q[5]?`<div class="cd" style="cursor:default"><b>교수님</b><p>${q[5]}</p><button class="mini-action" onclick="MEMOS.push([q[4]||'03:50','교수님 답변',q[5],q[3]]);toast('답변을 내 메모에 저장했어요')">답변을 내 메모에 저장</button></div>`:'<p class="mu">아직 등록된 답변이 없어요.</p>'}<button class="bt sec" onclick="S.ct='수업 Q&A';go('com','com')">질문 목록 보기</button>`};
+V.teamMembers=()=>`<h2>팀원 관리</h2><p class="mu">${S.tname} · 팀원 2명</p><div class="status-line"><div><b>한지민</b><div class="mu">디자인학과 · 팀장 · 나</div></div><span class="tg">팀장</span></div><div class="status-line"><div><b>김민지</b><div class="mu">디자인학과 · 팀원</div></div><span class="tg">팀원</span></div><h3>초대 대기</h3><p class="mu">받은 초대가 없어요.</p><button class="bt" onclick="go('tpick')">팀원 초대</button>`;
+V.taskdetail=()=>`<span class="tg">${TS[S.task]}</span><h2>사용성 테스트 준비</h2><p class="mu">김민지 · 11.19 (목) 18:00 마감</p><h3>작업 내용</h3><p>참가자 3명을 모집하고, 과제 제출 흐름의 테스트 질문을 작성해 주세요.</p><div class="cd" onclick="S.memo=0;go('mem')"><span class="mu">참고 메모 · 03:50</span><b>사용성 원칙 보기 →</b></div><div class="status-line"><b>진행 상태</b><span class="tg">${S.task==2?'완료':S.task==1?'진행 중':'시작 전'}</span></div><button class="bt sec" onclick="S.room='team';go('chat','com')">팀 채팅에서 질문하기</button><button class="bt" onclick="S.task=Math.min(2,S.task+1);R();toast(S.task==2?'작업을 완료했어요':'작업을 시작했어요')">${S.task==0?'작업 시작':S.task==1?'완료로 변경':'팀 작업 보기'}</button>`;
+V.answer=()=>`<h2>질문에 답변</h2><div class="cd" style="cursor:default"><span class="mu">김민지님의 질문</span><b>테스트 참가자는 같은 학과 학생으로 모집해도 될까요?</b></div><p><b>내 답변</b></p><textarea id="answerText" rows="4" placeholder="답변을 입력하세요.">${S.f.answer||''}</textarea><p class="mu">답변은 이 과제의 질문 아래에 표시돼요.</p><button class="bt" onclick="S.f.answer=$('answerText').value.trim();if(!S.f.answer){toast('답변을 입력해 주세요');return}go('answerDone')">답변 입력</button>`;
+V.answerDone=()=>`<h2>답변을 보냈어요</h2><div class="cd hi" style="cursor:default"><b>김민지님의 질문</b><p>테스트 참가자는 같은 학과 학생으로 모집해도 될까요?</p><div class="mu">한지민 · 내 답변</div><p>${S.f.answer||'네, 같은 학과 학생 3명으로 모집해 주세요.'}</p></div><button class="bt" onclick="go('taskdetail')">배정한 과제 보기</button>`;
+V.shareConfirm=()=>{const m=MEMOS[S.memo];return `<span class="tg">받는 곳 · ${S.rc?'김민지':'HELLO 디자인팀'}</span><h2>이 메모를 보낼까요?</h2><div class="cd" style="cursor:default"><span class="mu">UX 프로토타이핑 · ${m[3]}차시 ${m[0]}</span><b>${m[1]}</b><p>${m[2]}</p></div><p class="mu">다른 개인 기록은 함께 전송되지 않아요.</p><button class="bt" onclick="S.room=S.rc?'mj':'team';MSG[S.room].push(['나','__memo',S.memo]);go('chat','com');toast('메모를 보냈어요')">메모 보내기</button><button class="bt sec" onclick="back()">돌아가기</button>`};
+V.sharedMemo=()=>{const m=MEMOS[S.memo];return `<span class="tg">공유받은 메모</span><h2>${m[1]}</h2><p class="mu">UX 프로토타이핑 · ${m[3]}차시 ${m[0]}</p><div class="cd" style="cursor:default">${m[2]}</div><button class="bt" onclick="S.ls=m[3];S.pos=sec(m[0]);go('ply','crs')">이 시점부터 보기</button>`};
+V.memoEdit=()=>{const m=MEMOS[S.memo];return `<h2>메모 수정</h2><p class="mu">${m[3]}차시 · ${m[0]}</p><label class="mu" for="memoTitle">메모 제목</label><input id="memoTitle" value="${String(m[1]).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}" style="width:100%;margin-top:6px"><label class="mu" for="memoBody" style="display:block;margin-top:14px">메모 내용</label><textarea id="memoBody" rows="5" style="width:100%;margin-top:6px">${String(m[2]).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</textarea><button class="bt" style="width:100%" onclick="saveMemo()">저장하기</button><button class="bt sec" style="width:100%;margin-top:8px" onclick="back()">취소</button>`};
+
+const TT={noti:'알림',calendar:'이번 주 일정',qconfirm:'질문 등록 확인',qdetail:'질문 상세',teamMembers:'팀원 관리',taskdetail:'팀 작업 상세',answer:'질문에 답변',answerDone:'배정한 과제',shareConfirm:'공유 내용 확인',sharedMemo:'공유된 메모',memoEdit:'메모 수정',grad:'복학생 안내',asg:'과제',det:'과제 상세',s1:'과제 제출 · 1단계',pick:'파일 선택',big:'파일 선택',upl:'과제 제출',s2:'과제 제출 · 2단계',prev:'파일 미리보기',s3:'과제 제출 · 3단계',done:'과제 제출 완료',crs:'수업',ply:'수업',quiz:'4주차 퀴즈',qres:'퀴즈 결과',sum:'핵심 요약',fin:'4주차 학습 완료',com:'소통',chat:'',tmi:'팀 프로젝트',tpick:'팀 구성하기',tinv:'팀 구성하기',tlead:'팀장 선출하기',tname:'팀 이름 정하기',tprj:'팀 프로젝트',team:'팀 작업 현황',asn:'과제 부여',asp:'담당 팀원',asc:'배정 내용 확인',asd:'배정한 과제',tdet:'팀 작업 상세',memos:'전체 메모',mem:'내 메모',shr:'메모 공유',more:'더보기'};
+function ms(){const F=S.f,c=a=>a?'ok':'',fl=[['Main Flow','마감 기한이 얼마 남지 않은 과제가 있습니다. 제출을 완료해주세요.',[['파이널 프로토타입',F.det],['첨부파일 제출',F.att],['미리보기',F.prv],['제출 확인하기',S.sub]]],['Sub Flow 1','4주차 온라인 강의 수강 시간이 얼마 남지 않았습니다. 4주차 강의 학습을 전부 완료해 주세요.',[['강의 전부 듣기',S.les>=30],['퀴즈 풀기',S.qd],['간단 정리 확인',S.sd]]],['Sub Flow 2','당신이 Hello 디자인의 팀장이 되어 팀을 구성하고 과제를 부여해주세요.',[['김민지를 넣어 팀 만들기',S.tm>=1],['팀 과제 배정하기',S.tm==2]]],['Sub Flow 3','복학 후 처음 접속했습니다. 바뀐 학사 정보를 확인하고, 놓치면 안 되는 기한을 할 일에 추가해 주세요.',[['복학생 안내 확인',F.grad],['기한 확인',F.dl],['할 일에 추가',S.todo.length>0],['홈 오늘 할 일에서 확인',F.hm]]]];
+if(!$('ms'))return;$('ms').innerHTML=`<b style="font-size:16px">플로우 미션</b><p>각 Goal을 수행하면 Success가 체크돼요.</p>`+fl.map(f=>`<h4>${f[0]}</h4><p><b>Goal</b> ${f[1]}</p><ul>${f[2].map(s=>`<li class="${c(s[1])}">${s[1]?'✓':'○'} ${s[0]}</li>`).join('')}</ul>`).join('')+`<button class="bt sec" style="margin-top:12px" onclick="location.reload()">처음부터 다시</button>`}
+let lastAnimatedScreen=null;
+function R(keep){const screenChanged=lastAnimatedScreen!==S.scr;lastAnimatedScreen=S.scr;const F=S.f;if(S.scr=='grad'){F.grad=1;if(S.gt=='기한')F.dl=1}if(S.scr=='home'&&S.todo.length)F.hm=1;if(S.scr=='det')F.det=1;if(S.scr=='s2')F.att=1;if(S.scr=='prev')F.prv=1;
+const root=K.includes(S.scr),bk=!root&&S.scr!=='upl'?`<button onclick="back()">${ICO('back',24)}</button>`:'';
+const ttl=S.scr=='ply'?S.ls+'차시 수업':S.scr=='chat'?(S.room=='team'?S.tname:'김민지'):TT[S.scr];
+$('top').innerHTML=S.scr==='home'?`<span style="letter-spacing:.5px">HELLOLMS</span><button class="bell" aria-label="알림" onclick="go('noti')">${ICO('bell',20)}</button>`:bk+ttl;
+const y=$('bd').scrollTop;(()=>{const b=$('bd');b.innerHTML='<div class="pg'+(screenChanged?' page-enter':'')+'"><div class="cn">'+V[S.scr]()+'</div><div class="ft"></div></div>';const ft=b.querySelector('.ft');b.querySelectorAll('.cn .bt,.cn .ci').forEach(e=>ft.appendChild(e))})();$('bd').scrollTop=keep?y:(S.scr=='chat'?99999:0);
+$('nav').innerHTML=T.map((t,i)=>`<button class="${K[i]==S.tab?'on':''}" onclick="tab('${K[i]}')">${ICO(K[i],22)}${t}</button>`).join('');
+const modalRoot=$('md'), modalKey=S.md||'';
+if(modalRoot.dataset.modalKey!==modalKey){
+  modalRoot.innerHTML=MD();
+  modalRoot.dataset.modalKey=modalKey;
+}else if(S.md==='upload'){
+  const bar=modalRoot.querySelector('.upload-bar');
+  const pct=modalRoot.querySelector('.upload-percent');
+  if(bar)bar.style.width=S.prog+'%';
+  if(pct)pct.textContent=S.prog+'%';
+}
+}
+R();ms();
+</script></body></html>
